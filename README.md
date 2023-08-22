@@ -4,6 +4,11 @@ The Paywall Dapplet seamlessly integrates with Twitter, utilizing the NEAR Proto
 
 This project was bootstrapped with [Create Dapplet App](https://github.com/dapplets/create-dapplet-app)
 
+## Related Repositories
+
+* [Paywall Dapplet](https://github.com/dapplets/paywall-dapplet)
+* [Dapplet Extension (forked branch `near-bos`)](https://github.com/dapplets/dapplet-extension/tree/near-bos)
+* [NEAR BOS Twitter Config (forked branch `near-bos`)](https://github.com/dapplets/modules-monorepo/tree/near-bos)
 
 ## Getting Started
 
