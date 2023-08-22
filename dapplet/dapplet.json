@@ -1,0 +1,11 @@
+{
+  "name": { "$ref": "package.json#/name" },
+  "branch": "default",
+  "version": { "$ref": "package.json#/version" },
+  "type": "FEATURE",
+  "title": "NEAR Paywall",
+  "description": { "$ref": "package.json#/description" },
+  "main": { "$ref": "package.json#/main" },
+  "contextIds": ["twitter-bos-config"],
+  "dependencies": { "twitter-bos-config": "0.1.0" }
+}
