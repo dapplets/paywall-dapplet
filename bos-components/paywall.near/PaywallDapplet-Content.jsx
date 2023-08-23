@@ -16,16 +16,18 @@ if (!content) {
   return <></>;
 }
 
-const isPurchased = Near.view(
-  "app.paywall.near",
-  "purchased",
-  {
-    account_id: accountId,
-    content_id: contentId,
-  },
-  "final",
-  true
-);
+const isPurchased = accountId
+  ? Near.view(
+      "app.paywall.near",
+      "purchased",
+      {
+        account_id: accountId,
+        content_id: contentId,
+      },
+      "final",
+      true
+    )
+  : false;
 
 const price = "0.5";
 
