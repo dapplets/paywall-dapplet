@@ -1,0 +1,10 @@
+{
+  "label": "Button Label",
+  "disabled": false,
+  "icon": "https://near.org/favicon.ico",
+  "dark": false,
+
+  "accountId": "dapplets.near",
+  "loading": true,
+  "contentId": "1691462269182611456"
+}
