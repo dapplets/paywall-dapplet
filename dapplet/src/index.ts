@@ -1,35 +1,61 @@
 import {} from "@dapplets/dapplet-extension";
 
-async function getConnectedWallet() {
+const MAX_GAS_PER_TX = 300000000000000;
+const { near } = Core;
+
+type Session = { accountId: string; contract: any };
+
+async function getExistingSession(): Promise<Session> {
   const sessions = await Core.sessions();
   const walletOrigin = "near/mainnet";
   const session = sessions.find((x) => x.authMethod === walletOrigin);
-  return session?.wallet();
+  if (!session) {
+    return { accountId: null, contract: null };
+  }
+
+  const { accountId } = await session.wallet();
+  const contract = await session.contract("app.paywall.near", {
+    viewMethods: ["purchases", "purchased"],
+    changeMethods: ["buy"],
+  });
+
+  return { accountId, contract };
 }
 
-async function connectWallet() {
+async function createSession(): Promise<Session> {
   const session = await Core.login({ authMethods: ["near/mainnet"] });
-  return session.wallet();
+  if (!session) {
+    return { accountId: null, contract: null };
+  }
+
+  const { accountId } = await session.wallet();
+  const contract = await session.contract("app.paywall.near", {
+    viewMethods: ["purchases", "purchased"],
+    changeMethods: ["buy"],
+  });
+
+  return { accountId, contract };
 }
 
 @Injectable
-export default class Dapplet {
+export default class {
   @Inject("twitter-bos-config")
-  public adapter: any;
+  public adapter;
 
-  public wallet: any;
+  public session: Session;
 
   async activate(): Promise<void> {
-    this.wallet = await getConnectedWallet();
+    this.session = await getExistingSession();
 
     const { bos } = this.adapter.exports;
     this.adapter.attachConfig({
       POST: (post) => [
         bos({
           DEFAULT: {
-            src: "dapplets.near/widget/Web3Hackfest-Paywall-Content",
-            post,
-            accountId: this.wallet?.accountId,
+            src: "paywall.near/widget/PaywallDapplet-Content",
+            contentId: post.id,
+            accountId: this.session.accountId,
+            loading: false,
             onConnect: this.handleConnectClick,
             onBuy: this.handleBuyClick,
           },
@@ -41,8 +67,8 @@ export default class Dapplet {
   handleConnectClick = async (_, me) => {
     try {
       me.loading = true;
-      this.wallet = await connectWallet();
-      me.accountId = this.wallet?.accountId;
+      this.session = await createSession();
+      me.accountId = this.session.accountId;
     } catch (err) {
       console.error(err);
     } finally {
@@ -50,14 +76,16 @@ export default class Dapplet {
     }
   };
 
-  handleBuyClick = async (_, me) => {
+  handleBuyClick = async ({ contentId, price }, me) => {
     try {
       me.loading = true;
-      // this.wallet = await connectWallet();
-      // me.accountId = this.wallet?.accountId;
+      await this.session.contract.buy(
+        { content_id: contentId },
+        null, // default gas
+        near.utils.format.parseNearAmount(price)
+      );
     } catch (err) {
       console.error(err);
-    } finally {
       me.loading = false;
     }
   };
