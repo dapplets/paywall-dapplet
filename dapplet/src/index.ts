@@ -46,6 +46,21 @@ export default class {
   async activate(): Promise<void> {
     this.session = await getExistingSession();
 
+    Core.onAction(() => {
+      const bosUrl =
+        "https://near.org/embed/paywall.near/widget/PaywallDapplet-Overlay" +
+        (this.session.accountId
+          ? `?buyerAccountId=${this.session.accountId}`
+          : "");
+
+      const overlay = Core.overlay({
+        url: bosUrl,
+        title: "Paywall",
+      });
+
+      overlay.open();
+    });
+
     const { bos } = this.adapter.exports;
     this.adapter.attachConfig({
       POST: (post) => [

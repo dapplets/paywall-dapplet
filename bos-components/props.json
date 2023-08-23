@@ -4,7 +4,9 @@
   "icon": "https://near.org/favicon.ico",
   "dark": false,
 
-  "accountId": "dapplets.near",
+  "accountId": "alsakhaev.near",
   "loading": true,
-  "contentId": "1691462269182611456"
+  "contentId": "1691462269182611456",
+
+  "buyerAccountId": "alsakhaev.near"
 }
