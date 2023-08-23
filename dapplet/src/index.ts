@@ -1,6 +1,5 @@
 import {} from "@dapplets/dapplet-extension";
 
-const MAX_GAS_PER_TX = 300000000000000;
 const { near } = Core;
 
 type Session = { accountId: string; contract: any };
