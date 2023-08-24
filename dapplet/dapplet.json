@@ -4,6 +4,7 @@
   "version": { "$ref": "package.json#/version" },
   "type": "FEATURE",
   "title": "NEAR Paywall",
+  "icon": "./src/icon.png",
   "description": { "$ref": "package.json#/description" },
   "main": { "$ref": "package.json#/main" },
   "contextIds": ["twitter-bos-config"],
