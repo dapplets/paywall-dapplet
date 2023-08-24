@@ -46,12 +46,13 @@ export default class {
 
   async activate(): Promise<void> {
     this.session = await getExistingSession();
-
+    this.state.global.accountId.next(this.session.accountId);
+    
     Core.onAction(() => {
       const bosUrl =
         "https://near.org/embed/paywall.near/widget/PaywallDapplet-Overlay" +
-        (this.session.accountId
-          ? `?buyerAccountId=${this.session.accountId}`
+        (this.state.global.accountId.value
+          ? `?buyerAccountId=${this.state.global.accountId.value}`
           : "");
 
       const overlay = Core.overlay({
