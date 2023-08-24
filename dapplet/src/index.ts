@@ -39,9 +39,10 @@ async function createSession(): Promise<Session> {
 @Injectable
 export default class {
   @Inject("twitter-bos-config")
-  public adapter;
+  private adapter;
 
-  public session: Session;
+  private session: Session;
+  private state = Core.state({ accountId: null });
 
   async activate(): Promise<void> {
     this.session = await getExistingSession();
@@ -68,7 +69,7 @@ export default class {
           DEFAULT: {
             src: "paywall.near/widget/PaywallDapplet-Content",
             contentId: post.id,
-            accountId: this.session.accountId,
+            accountId: this.state.global.accountId,
             loading: false,
             onConnect: this.handleConnectClick,
             onBuy: this.handleBuyClick,
@@ -82,6 +83,7 @@ export default class {
     try {
       me.loading = true;
       this.session = await createSession();
+      this.state.global.accountId.next(this.session.accountId);
       me.accountId = this.session.accountId;
     } catch (err) {
       console.error(err);
