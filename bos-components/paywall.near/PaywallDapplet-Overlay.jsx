@@ -4,8 +4,65 @@
  */
 const { buyerAccountId } = props;
 
+const Wrapper = styled.div`
+  .main-container {
+    padding: 15px;
+    background: #f5f5f5;
+
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+      Helvetica, Arial, sans-serif;
+
+    height: calc(100vh - 14px);
+    width: 100%;
+  }
+
+  .top-description {
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 21px;
+    margin-bottom: 10px;
+    color: #747376;
+  }
+
+  .content-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    padding: 10px;
+    gap: 10px;
+    align-self: stretch;
+    border-radius: 10px;
+    border: 1px solid #e3e3e3;
+  }
+
+  .content-card {
+    background-color: #fff;
+    border-radius: 4px;
+    padding: 10px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .content-container-id {
+    color: #919191;
+    font-size: 12px;
+  }
+`;
+
 if (!buyerAccountId) {
-  return <div>Connect your Wallet</div>;
+  return (
+    <Wrapper>
+      <div className="main-container">
+        <div className="top-description">
+          The Paywall Dapplet seamlessly integrates with Twitter, utilizing the
+          NEAR Protocol and NEAR BOS to display paid content, a solution
+          developed during the Web3 Hackfest 2023 hackathon.
+        </div>
+        <div className="top-description">Connect your wallet</div>
+      </div>
+    </Wrapper>
+  );
 }
 
 const purchases = buyerAccountId
@@ -20,34 +77,44 @@ const purchases = buyerAccountId
     )
   : false;
 
-const Wrapper = styled.div`
-  .main-container {
-    padding: 10px;
-  }
-
-  .content-card {
-    margin-bottom: 20px;
-    width: 100%;
-  }
-`;
-
 if (purchases === null) {
-  return <div>Loading...</div>;
+  return (
+    <Wrapper>
+      <div className="main-container">
+        <div className="top-description">
+          The Paywall Dapplet seamlessly integrates with Twitter, utilizing the
+          NEAR Protocol and NEAR BOS to display paid content, a solution
+          developed during the Web3 Hackfest 2023 hackathon.
+        </div>
+      </div>
+    </Wrapper>
+  );
 }
 
 return (
   <Wrapper>
     <div className="main-container">
-    {purchases.map((contentId) => (
-      <div className="content-card">
-        <div>Tweet ID: {contentId}</div>
-        <Widget
-          key={contentId}
-          src={`paywall.near/widget/PaywallDapplet-Content`}
-          props={{ accountId: buyerAccountId, contentId: contentId }}
-        />
+      <div className="top-description">
+        The Paywall Dapplet seamlessly integrates with Twitter, utilizing the
+        NEAR Protocol and NEAR BOS to display paid content, a solution developed
+        during the Web3 Hackfest 2023 hackathon.
       </div>
-    ))}
+      <div className="content-container">
+        {purchases.map((contentId) => (
+          <div className="content-card">
+            <Widget
+              key={contentId}
+              src={`paywall.near/widget/PaywallDapplet-Content`}
+              props={{
+                accountId: buyerAccountId,
+                contentId: contentId,
+                basic: true,
+              }}
+            />
+            <div className="content-container-id">id: {contentId}</div>
+          </div>
+        ))}
+      </div>
     </div>
   </Wrapper>
 );

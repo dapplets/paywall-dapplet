@@ -1,4 +1,4 @@
-const { contentId, accountId, onBuy, onConnect, loading } = props;
+const { contentId, accountId, onBuy, onConnect, loading, basic } = props;
 
 function getContentById(contentId) {
   return {
@@ -40,6 +40,14 @@ const Wrapper = styled.div`
     border: 1px solid rgb(207, 217, 222);
     aspect-ratio: 1.777;
     cursor: default;
+    position: relative;
+  }
+
+  .content-wrapper-basic {
+    overflow: hidden;
+    width: 100%;
+    border-radius: 4px;
+    aspect-ratio: 1.777;
     position: relative;
   }
 
@@ -142,7 +150,7 @@ const Loader = () => (
 
 return (
   <Wrapper>
-    <div className="content-blur-wrapper">
+    <div className={basic ? "content-wrapper-basic" : "content-blur-wrapper"}>
       {isPurchased === null ? null : isPurchased ? (
         <img className="content-image" src={content.originalImage} />
       ) : (

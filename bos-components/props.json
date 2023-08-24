@@ -3,6 +3,7 @@
   "disabled": false,
   "icon": "https://near.org/favicon.ico",
   "dark": false,
+  "basic": true,
 
   "accountId": "alsakhaev.near",
   "loading": true,
