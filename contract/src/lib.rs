@@ -73,6 +73,23 @@ impl Contract {
 
         tokens.to_vec()
     }
+
+    pub fn clear_my_purchases(&mut self) {
+        let account_id = env::predecessor_account_id();
+        let mut content_purchases =
+            self.purchases_per_account
+                .get(&account_id)
+                .unwrap_or_else(|| {
+                    UnorderedSet::new(StorageKeys::PurchasesPerAccountInner {
+                        account_hash: env::sha256_array(account_id.as_bytes()),
+                    })
+                });
+
+        // Add the content to the purchased list for the account
+        content_purchases.clear();
+        self.purchases_per_account
+            .insert(&account_id, &content_purchases);
+    }
 }
 
 #[cfg(test)]
@@ -118,7 +135,10 @@ mod tests {
         contract.buy(content_id.clone());
 
         // Check if the attached deposit was returned
-        assert_eq!(env::account_balance(), balance_before - 10_000_000_000_000_000_000_000);
+        assert_eq!(
+            env::account_balance(),
+            balance_before - 10_000_000_000_000_000_000_000
+        );
     }
 
     #[test]
@@ -165,5 +185,19 @@ mod tests {
 
         // Check if the content was not purchased
         assert!(!contract.purchased(accounts(1), content_id));
+    }
+
+    #[test]
+    fn test_clear_purchases() {
+        let mut contract = get_contract();
+        let content_id1 = "content123".to_string();
+
+        // Buy some content and clear purchases
+        contract.buy(content_id1.clone());
+        contract.clear_my_purchases();
+
+        // Check purchased content
+        let purchases = contract.purchases(&accounts(1));
+        assert_eq!(purchases.len(), 0);
     }
 }
