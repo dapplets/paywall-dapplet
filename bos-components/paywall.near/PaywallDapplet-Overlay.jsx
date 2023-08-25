@@ -14,13 +14,15 @@ const Wrapper = styled.div`
 
     height: calc(100vh - 14px);
     width: 100%;
+    gap: 10px;
+    display: flex;
+    flex-direction: column;
   }
 
   .top-description {
     font-size: 14px;
     font-weight: 400;
     line-height: 21px;
-    margin-bottom: 10px;
     color: #747376;
   }
 
@@ -50,15 +52,19 @@ const Wrapper = styled.div`
   }
 `;
 
+const Header = () => (
+  <div className="top-description">
+    The Paywall Dapplet seamlessly integrates with Twitter, utilizing the NEAR
+    Protocol and NEAR BOS to display paid content, a solution developed during
+    the Web3 Hackfest 2023 hackathon.
+  </div>
+);
+
 if (!buyerAccountId) {
   return (
     <Wrapper>
       <div className="main-container">
-        <div className="top-description">
-          The Paywall Dapplet seamlessly integrates with Twitter, utilizing the
-          NEAR Protocol and NEAR BOS to display paid content, a solution
-          developed during the Web3 Hackfest 2023 hackathon.
-        </div>
+        <Header />
         <div className="top-description">Connect your wallet</div>
       </div>
     </Wrapper>
@@ -81,11 +87,18 @@ if (purchases === null) {
   return (
     <Wrapper>
       <div className="main-container">
-        <div className="top-description">
-          The Paywall Dapplet seamlessly integrates with Twitter, utilizing the
-          NEAR Protocol and NEAR BOS to display paid content, a solution
-          developed during the Web3 Hackfest 2023 hackathon.
-        </div>
+        <Header />
+      </div>
+    </Wrapper>
+  );
+}
+
+if (purchases.length === 0) {
+  return (
+    <Wrapper>
+      <div className="main-container">
+        <Header />
+        <div className="top-description">No purchases</div>
       </div>
     </Wrapper>
   );
@@ -94,11 +107,7 @@ if (purchases === null) {
 return (
   <Wrapper>
     <div className="main-container">
-      <div className="top-description">
-        The Paywall Dapplet seamlessly integrates with Twitter, utilizing the
-        NEAR Protocol and NEAR BOS to display paid content, a solution developed
-        during the Web3 Hackfest 2023 hackathon.
-      </div>
+      <Header />
       <div className="content-container">
         {purchases.map((contentId) => (
           <div className="content-card">
