@@ -1,37 +1,32 @@
 const { contentId, accountId, onBuy, onConnect, loading, basic } = props;
 
-const S3_STORAGE_URL =
-  "https://miscellaneous.s3-website.fr-par.scw.cloud/web3hackfest-2023";
-
-const contents = [
-  // {
-  //   id: "",
-  //   blurred: S3_STORAGE_URL + "/MrConCreator/0001_blurred.png",
-  //   original: S3_STORAGE_URL + "/MrConCreator/0001.png",
-  // },
-  {
-    id: "1694994895662977529",
-    blurred: S3_STORAGE_URL + "/MrConCreator/0001_blurred.png",
-    original: S3_STORAGE_URL + "/MrConCreator/0001.png",
-  },
-  {
-    id: "1694995203663290832",
-    blurred: S3_STORAGE_URL + "/MrConCreator/0002_blurred.png",
-    original: S3_STORAGE_URL + "/MrConCreator/0002.png",
-  },
-  {
-    id: "1694995269547438149",
-    blurred: S3_STORAGE_URL + "/MrConCreator/0003_blurred.png",
-    original: S3_STORAGE_URL + "/MrConCreator/0003.png",
-  },
-  {
-    id: "1694995303642939408",
-    blurred: S3_STORAGE_URL + "/MrConCreator/0004_blurred.png",
-    original: S3_STORAGE_URL + "/MrConCreator/0004.png",
-  },
-];
-
 function getContentById(contentId) {
+  const S3_STORAGE_URL =
+    "https://miscellaneous.s3-website.fr-par.scw.cloud/web3hackfest-2023";
+
+  const contents = [
+    {
+      id: "1694994895662977529",
+      blurred: S3_STORAGE_URL + "/MrConCreator/0001_blurred.png",
+      original: S3_STORAGE_URL + "/MrConCreator/0001.png",
+    },
+    {
+      id: "1694995203663290832",
+      blurred: S3_STORAGE_URL + "/MrConCreator/0002_blurred.png",
+      original: S3_STORAGE_URL + "/MrConCreator/0002.png",
+    },
+    {
+      id: "1694995269547438149",
+      blurred: S3_STORAGE_URL + "/MrConCreator/0003_blurred.png",
+      original: S3_STORAGE_URL + "/MrConCreator/0003.png",
+    },
+    {
+      id: "1694995303642939408",
+      blurred: S3_STORAGE_URL + "/MrConCreator/0004_blurred.png",
+      original: S3_STORAGE_URL + "/MrConCreator/0004.png",
+    },
+  ];
+
   return contents.find((x) => x.id === contentId);
 }
 
