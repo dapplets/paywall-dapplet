@@ -2,7 +2,7 @@
 
 The Paywall Dapplet seamlessly integrates with Twitter, utilizing the NEAR Protocol and NEAR BOS to display paid content, a solution developed during the Web3 Hackfest 2023 hackathon.
 
-This project was bootstrapped with [Create Dapplet App](https://github.com/dapplets/create-dapplet-app)
+The forked Dapplet Extension is available at [Chrome Web Store](https://chrome.google.com/webstore/detail/dapplets-development-buil/oldijfflfojekjlmkjclmjmnpdinieaa)
 
 ## Related Repositories
 
@@ -16,6 +16,8 @@ This project was bootstrapped with [Create Dapplet App](https://github.com/dappl
 2.  `npm start` to run module at localhost.
 
 ## Learn more
+
+This project was bootstrapped with [Create Dapplet App](https://github.com/dapplets/create-dapplet-app)
 
 * **Dapplets Project** - [dapplets site](https://dapplets.org/)
 * **Documentation** - [documentation](https://docs.dapplets.org/docs/)
