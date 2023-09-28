@@ -2,7 +2,7 @@
 
 # NEAR Paywall Dapplet
 
-The Paywall Dapplet seamlessly integrates with Twitter, utilizing the NEAR Protocol and NEAR BOS to display paid content, a solution developed during the [Web3 Hackfest 2023 hackathon](https://web3hackfest.org/)).
+The Paywall Dapplet seamlessly integrates with Twitter, utilizing the NEAR Protocol and NEAR BOS to display paid content, a solution developed during the [Web3 Hackfest 2023 hackathon](https://web3hackfest.org/).
 
 We got first places in two tracks. More details can be found here: https://devfolio.co/projects/dapplets-72b4
 
