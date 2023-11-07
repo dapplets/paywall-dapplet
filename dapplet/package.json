@@ -1,6 +1,6 @@
 {
   "name": "paywall-dapplet",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Seamlessly integrates with Twitter, utilizing the NEAR Protocol and NEAR BOS to display paid content, a solution developed during the Web3 Hackfest 2023 hackathon.",
   "main": "lib/index.js",
   "scripts": {

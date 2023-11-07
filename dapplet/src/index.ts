@@ -98,7 +98,7 @@ export default class {
       me.loading = true;
       await this.session.contract.buy(
         { content_id: contentId },
-        null, // default gas
+        undefined, // default gas
         near.utils.format.parseNearAmount(price)
       );
     } catch (err) {
