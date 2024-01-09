@@ -1,4 +1,4 @@
-![image](https://github.com/dapplets/paywall-dapplet/blob/main/paywall-dapplet.png)
+![image](/docs/paywall-dapplet.png)
 
 # NEAR Paywall Dapplet
 
