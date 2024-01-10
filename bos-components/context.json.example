@@ -1,7 +1,0 @@
-{
-  "wrapperSrc": "near/widget/DIG.Theme",
-  "wrapperProps": {},
-  "networkId": "mainnet",
-  "accessKey": "ed25519:.......",
-  "accountId": "paywall.near"
-}
