@@ -1,13 +1,14 @@
 use near_sdk::borsh::{self, BorshDeserialize, BorshSerialize};
 use near_sdk::collections::{LookupMap, UnorderedSet};
+use near_sdk::serde::{Deserialize, Serialize};
 use near_sdk::{env, near_bindgen, AccountId, BorshStorageKey, CryptoHash, Promise};
-use serde::ser::{Serialize, SerializeStruct, Serializer};
 use std::collections::hash_map::DefaultHasher;
 use std::hash::{Hash, Hasher};
 
 type ContextId = String;
 
-#[derive(BorshSerialize, BorshDeserialize)]
+#[derive(BorshDeserialize, BorshSerialize, Deserialize, Serialize, Debug)]
+#[serde(crate = "near_sdk::serde")]
 pub struct PaidContent {
     id: String,
     link: String,
@@ -16,39 +17,11 @@ pub struct PaidContent {
     context_id: ContextId,
 }
 
-// This is what #[derive(Serialize)] would generate.
-impl Serialize for PaidContent {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: Serializer,
-    {
-        let mut s = serializer.serialize_struct("PaidContent", 5)?;
-        s.serialize_field("id", &self.id)?;
-        s.serialize_field("link", &self.link)?;
-        s.serialize_field("author", &self.author)?;
-        s.serialize_field("cost", &self.cost)?;
-        s.serialize_field("context_id", &self.context_id)?;
-        s.end()
-    }
-}
-
-#[derive(BorshSerialize, BorshDeserialize)]
+#[derive(BorshDeserialize, BorshSerialize, Deserialize, Serialize, Debug)]
+#[serde(crate = "near_sdk::serde")]
 pub struct ReturningContent {
     content: PaidContent,
     is_purchased: bool,
-}
-
-// This is what #[derive(Serialize)] would generate.
-impl Serialize for ReturningContent {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: Serializer,
-    {
-        let mut s = serializer.serialize_struct("ReturningContent", 2)?;
-        s.serialize_field("content", &self.content)?;
-        s.serialize_field("is_purchased", &self.is_purchased)?;
-        s.end()
-    }
 }
 
 #[near_bindgen]
@@ -197,15 +170,14 @@ impl Contract {
             "Content already purchased"
         );
 
-        let x = self.paid_contents.get(&id).unwrap();
-        let cost = x.cost;
+        let content = self.paid_contents.get(&id).unwrap();
         let attached = env::attached_deposit().to_string();
 
         // Check if the attached_deposit is wrong
         assert!(
-            cost == attached,
+            content.cost == attached,
             "Attached deposit is wrong. It should be {} instead of {}",
-            cost,
+            content.cost,
             attached
         );
 
@@ -215,7 +187,7 @@ impl Contract {
             .insert(&account_id, &content_purchases);
 
         // Transfer attached deposit to the author
-        Promise::new(x.author).transfer(env::attached_deposit())
+        Promise::new(content.author).transfer(env::attached_deposit())
     }
 
     pub fn is_purchased(&self, account_id: &AccountId, content_id: String) -> bool {
