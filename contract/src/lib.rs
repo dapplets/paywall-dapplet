@@ -51,17 +51,18 @@ pub enum StorageKeys {
     PaidContents,
 }
 
-fn calculate_hash<T: Hash>(t: &T) -> u64 {
+fn calculate_hash<T: Hash>(t: &T) -> String {
     let mut s = DefaultHasher::new();
     t.hash(&mut s);
-    s.finish()
+    let u = s.finish();
+    u.to_string()
 }
 
 #[near_bindgen]
 impl Contract {
     pub fn add_paid_content(&mut self, link: String, cost: String, context_id: String) -> String {
         let author = env::predecessor_account_id();
-        let id = calculate_hash(&(context_id.clone() + &link)).to_string();
+        let id = calculate_hash(&(calculate_hash(&context_id) + &calculate_hash(&link)));
 
         // Check if the content with the same I has already been added
         assert!(
@@ -231,7 +232,7 @@ mod tests {
             contract.add_paid_content(link.to_string(), cost.to_string(), context_id.clone());
 
         // Check if content has been added
-        let content_id = calculate_hash(&format!("{context_id}{link}")).to_string();
+        let content_id = calculate_hash(&(calculate_hash(&context_id) + &calculate_hash(&link)));
         assert_eq!(content_id, received_id);
         assert!(contract.paid_contents.contains_key(&content_id));
 
@@ -276,7 +277,7 @@ mod tests {
         let link = "https://example.com/content";
         let cost = 2 * NEAR;
         let context_id = "context123".to_string();
-        let content_id = calculate_hash(&format!("{context_id}{link}")).to_string();
+        let content_id = calculate_hash(&(calculate_hash(&context_id) + &calculate_hash(&link)));
         contract.add_paid_content(link.to_string(), cost.to_string(), context_id.clone());
 
         // Create another account and buy the content
@@ -315,7 +316,7 @@ mod tests {
         let link = "https://example.com/content";
         let cost = 2 * NEAR;
         let context_id = "context123".to_string();
-        let content_id = calculate_hash(&format!("{context_id}{link}")).to_string();
+        let content_id = calculate_hash(&(calculate_hash(&context_id) + &calculate_hash(&link)));
         contract.add_paid_content(link.to_string(), cost.to_string(), context_id.clone());
 
         // Purchase content
@@ -337,7 +338,7 @@ mod tests {
         let link = "https://example.com/content";
         let cost = 2 * NEAR;
         let context_id = "context123".to_string();
-        let content_id = calculate_hash(&format!("{context_id}{link}")).to_string();
+        let content_id = calculate_hash(&(calculate_hash(&context_id) + &calculate_hash(&link)));
         contract.add_paid_content(link.to_string(), cost.to_string(), context_id.clone());
 
         // Create another account and buy the content
