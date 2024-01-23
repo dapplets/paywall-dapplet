@@ -61,8 +61,10 @@ export default class {
             POST: (post) => [
                 bos({
                     DEFAULT: {
-                        src: 'nikter.near/widget/Paywall',
-                        contentId: post.id,
+                        src: 'bos.dapplets.near/widget/Paywall.Main',
+                        link: {
+                            linkId: post.id + '/twitter',
+                        },
                         nearAccountId: this.state.global.accountId.value,
                     },
                 }),
