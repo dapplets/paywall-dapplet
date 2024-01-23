@@ -113,7 +113,7 @@ impl Contract {
     pub fn get_content_by_post_for_account(
         &self,
         context_id: ContextId,
-        account_id: AccountId,
+        account_id: String,
     ) -> Vec<ReturningContent> {
         assert!(
             self.paid_content_per_context.contains_key(&context_id),
@@ -127,7 +127,11 @@ impl Contract {
         let mut returned_contents = Vec::new();
         for id in ids {
             let content = self.paid_contents.get(&id).unwrap();
-            let is_purchased = self.is_purchased(&account_id, id);
+            let is_purchased = if account_id == "" {
+                false
+            } else {
+                self.is_purchased(&account_id.parse().unwrap(), id)
+            };
             let returned_content = ReturningContent {
                 content,
                 is_purchased,
@@ -135,6 +139,30 @@ impl Contract {
             returned_contents.push(returned_content);
         }
         returned_contents
+    }
+
+    pub fn get_one(&self, context_id: ContextId, account_id: String) -> ReturningContent {
+        assert!(
+            self.paid_content_per_context.contains_key(&context_id),
+            "There is no content with this ID"
+        );
+        let ids = self
+            .paid_content_per_context
+            .get(&context_id.to_string())
+            .unwrap()
+            .to_vec();
+        let id = ids.get(0).unwrap().to_owned();
+        let content = self.paid_contents.get(&id).unwrap();
+        let is_purchased = if account_id == "" {
+            false
+        } else {
+            self.is_purchased(&account_id.parse().unwrap(), id)
+        };
+        let returned_content = ReturningContent {
+            content,
+            is_purchased,
+        };
+        returned_content
     }
 
     #[payable]
@@ -198,6 +226,10 @@ impl Contract {
             None => false,
         }
     }
+
+    pub fn has_content(&self, context_id: ContextId) -> bool {
+        self.paid_content_per_context.contains_key(&context_id)
+    }
 }
 
 #[cfg(test)]
@@ -256,10 +288,9 @@ mod tests {
         contract.add_paid_content(link.to_string(), cost.to_string(), context_id.clone());
 
         // Get content for an account (view function)
-        let account_id: AccountId = bob_id.parse().unwrap();
-        let result = contract.get_content_by_post_for_account(context_id, account_id);
+        let result = contract.get_content_by_post_for_account(context_id, bob_id.to_string());
         let returned_content = &result[0];
-        assert_eq!(returned_content.is_purchased, true);
+        assert!(returned_content.is_purchased);
         assert_eq!(returned_content.content.link, link);
         assert_eq!(returned_content.content.cost, cost.to_string());
     }
@@ -352,5 +383,119 @@ mod tests {
 
         // Purchase content
         contract.buy(content_id.clone());
+    }
+
+    #[test]
+    fn test_has_positive() {
+        let mut contract = Contract::default();
+        let bob_id = "bob.near";
+        let builder = create_context(bob_id.to_string(), 0);
+        testing_env!(builder.build());
+
+        // Add paid content
+        let link = "https://example.com/content";
+        let cost = 2 * NEAR;
+        let context_id = "context123".to_string();
+        contract.add_paid_content(link.to_string(), cost.to_string(), context_id.clone());
+
+        // Has context a content (view function)
+        let result = contract.has_content(context_id);
+        assert!(result);
+    }
+
+    #[test]
+    fn test_has_negative() {
+        let contract = Contract::default();
+        let bob_id = "bob.near";
+        let builder = create_context(bob_id.to_string(), 0);
+        testing_env!(builder.build());
+
+        // Do not add paid content
+        let context_id = "context123".to_string();
+
+        // Has context a content (view function)
+        let result = contract.has_content(context_id);
+        assert!(!result);
+    }
+
+    // Test getting content without an account
+    #[test]
+    fn test_get_content_by_post_without_account() {
+        let mut contract = Contract::default();
+        let bob_id = "bob.near";
+        let builder = create_context(bob_id.to_string(), 0);
+        testing_env!(builder.build());
+
+        // Add paid content
+        let link = "https://example.com/content";
+        let cost = 2 * NEAR;
+        let context_id = "context123".to_string();
+        contract.add_paid_content(link.to_string(), cost.to_string(), context_id.clone());
+
+        // Get content for an account (view function)
+        let result = contract.get_content_by_post_for_account(context_id, "".to_string());
+        let returned_content = &result[0];
+        assert!(!returned_content.is_purchased);
+        assert_eq!(returned_content.content.link, link);
+        assert_eq!(returned_content.content.cost, cost.to_string());
+    }
+
+    #[test]
+    fn test_get_one_positive() {
+        let mut contract = Contract::default();
+        let bob_id = "bob.near";
+        let builder = create_context(bob_id.to_string(), 0);
+        testing_env!(builder.build());
+
+        // Add paid content
+        let link = "https://example.com/content";
+        let cost = 2 * NEAR;
+        let context_id = "context123".to_string();
+        contract.add_paid_content(link.to_string(), cost.to_string(), context_id.clone());
+
+        // Get content for an account (view function)
+        let result = contract.get_one(context_id, bob_id.to_string());
+        assert!(result.is_purchased);
+        assert_eq!(result.content.link, link);
+        assert_eq!(result.content.cost, cost.to_string());
+    }
+
+    #[test]
+    fn test_get_one_without_account() {
+        let mut contract = Contract::default();
+        let bob_id = "bob.near";
+        let builder = create_context(bob_id.to_string(), 0);
+        testing_env!(builder.build());
+
+        // Add paid content
+        let link = "https://example.com/content";
+        let cost = 2 * NEAR;
+        let context_id = "context123".to_string();
+        contract.add_paid_content(link.to_string(), cost.to_string(), context_id.clone());
+
+        // Get content for an account (view function)
+        let result = contract.get_one(context_id, "".to_string());
+        assert!(!result.is_purchased);
+        assert_eq!(result.content.link, link);
+        assert_eq!(result.content.cost, cost.to_string());
+    }
+
+    #[test]
+    #[should_panic(expected = "There is no content with this ID")]
+    fn test_get_one_wrong_id() {
+        let mut contract = Contract::default();
+        let bob_id = "bob.near";
+        let builder = create_context(bob_id.to_string(), 0);
+        testing_env!(builder.build());
+
+        // Add paid content
+        let link = "https://example.com/content";
+        let cost = 2 * NEAR;
+        let context_id = "context123".to_string();
+        contract.add_paid_content(link.to_string(), cost.to_string(), context_id);
+
+        // Get content for an account (view function)
+        let wrong_context_id = "wrong-id".to_string();
+        contract.get_one(wrong_context_id, "".to_string());
     }
 }
