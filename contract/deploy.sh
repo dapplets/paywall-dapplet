@@ -10,4 +10,4 @@ fi
 echo ">> Deploying contract"
 
 # https://docs.near.org/tools/near-cli#near-dev-deploy
-near deploy --wasmFile ./target/wasm32-unknown-unknown/release/paywall_dapplet.wasm --masterAccount app.paywall.near --accountId app.paywall.near
+near deploy --wasmFile ./target/wasm32-unknown-unknown/release/paywall_dapplet.wasm --masterAccount v2.paywall.near --accountId v2.paywall.near
